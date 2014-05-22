@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutMusicListControl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/greenyellow"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/buttonMusicListActionCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="取消" />
+
+        <Button
+            android:id="@+id/buttonMusicListChoseAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="全选" />
+    </RelativeLayout>
+
+    <bigfat.mymusicplayer.widget.MyListView
+        android:id="@+id/myListViewMusicList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayoutMusicListAction"
+        android:layout_below="@+id/relativeLayoutMusicListControl"
+        android:divider="@null" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutMusicListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/greenyellow"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/buttonMusicListAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="添加到" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutPlayListAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/greenyellow"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/buttonMusicListDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="删除" />
+
+    </RelativeLayout>
+
+    <bigfat.mymusicplayer.widget.IndexBar
+        android:id="@+id/indexBarMusicList"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true" />
+</RelativeLayout>

@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayoutMusicInfo"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/imageViewAlbumPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/music_album_default" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutMusicInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/textViewMusicTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:drawableLeft="@drawable/icon_music_title"
+            android:padding="6dp"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textViewMusicAlbum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewMusicTitle"
+            android:drawableLeft="@drawable/icon_music_album"
+            android:padding="3dp"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textViewMusicArtist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewMusicTitle"
+            android:layout_toRightOf="@+id/textViewMusicAlbum"
+            android:drawableLeft="@drawable/icon_music_artist"
+            android:padding="3dp"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</RelativeLayout>

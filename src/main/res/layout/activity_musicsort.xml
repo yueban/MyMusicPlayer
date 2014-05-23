@@ -16,7 +16,7 @@
 
             <TextView
                 style="@style/textViewMusicListBanner"
-                android:text="@string/allmusic" />
+                android:text="@string/music_all" />
 
             <View
                 android:id="@+id/viewLineAllMusic"

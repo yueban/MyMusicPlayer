@@ -66,11 +66,13 @@ public class MusicService extends Service {
         }
     };
     public static boolean isSeekBarChanging = false;
+    private boolean isFavorite;
     //MusicPlayer模块上的控件
     private ImageView imageViewPlayMusic;
     private ImageView imageViewPreviousMusic;
     private ImageView imageViewNextMusic;
     private ImageView imageViewMusicPlayMode;
+    private ImageView imageViewMusicControlFavorite;
     private SeekBar seekBarMusic;
     private TextView textViewPlayTimeTotal;
     //音乐播放组件
@@ -290,6 +292,20 @@ public class MusicService extends Service {
             } else if (v == imageViewMusicPlayMode) {
                 playmodeCurrent = playmodeCurrent == 3 ? 0 : ++playmodeCurrent;
                 imageViewMusicPlayMode.setImageResource(playmodeImgRes[playmodeCurrent]);
+            } else if (v == imageViewMusicControlFavorite) {
+                if (isFileLoaded) {
+                    if (isFavorite) {
+                        DBUtil.execSqlDatabase(MusicService.this, DBUtil.databaseName, "update " + DBUtil.T_MusicFile_Name + " set favorite=0 where path='" + musicList.get(position).get("path").replace("'", "''") + "'");
+                        isFavorite = false;
+                        imageViewMusicControlFavorite.setImageResource(android.R.drawable.ic_menu_search);
+                        Toast.makeText(MusicService.this, "从我的喜爱中移除", Toast.LENGTH_SHORT).show();
+                    } else {
+                        DBUtil.execSqlDatabase(MusicService.this, DBUtil.databaseName, "update " + DBUtil.T_MusicFile_Name + " set favorite=1 where path='" + musicList.get(position).get("path").replace("'", "''") + "'");
+                        isFavorite = true;
+                        imageViewMusicControlFavorite.setImageResource(R.drawable.music_love);
+                        Toast.makeText(MusicService.this, "添加到我的喜爱", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }
     }
@@ -311,6 +327,31 @@ public class MusicService extends Service {
                 } else {
                     imageViewPlayMusic.setImageResource(R.drawable.music_control_play);
                 }
+                //获取该歌曲是否被设置为喜欢
+                SQLiteDatabase db = null;
+                Cursor cursor = null;
+                try {
+                    db = DBUtil.getReadableDB(MusicService.this, DBUtil.databaseName);
+                    cursor = DBUtil.rawQueryCursor(db, "select favorite from " + DBUtil.T_MusicFile_Name + " where path='" + musicList.get(position).get("path").replace("'", "''") + "'", null);
+                    if (cursor.moveToNext()) {
+                        if (cursor.getString(cursor.getColumnIndex("favorite")).equals("1")) {
+                            isFavorite = true;
+                            imageViewMusicControlFavorite.setImageResource(R.drawable.music_love);
+                        } else {
+                            isFavorite = false;
+                            imageViewMusicControlFavorite.setImageResource(android.R.drawable.ic_menu_search);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                    if (db != null) {
+                        db.close();
+                    }
+                }
             }
         }
 
@@ -318,11 +359,12 @@ public class MusicService extends Service {
             return mp.getCurrentPosition();
         }
 
-        public void setView(ImageView _imageViewPlayMusic, ImageView _imageViewPreviousMusic, ImageView _imageViewNextMusic, ImageView _imageViewMusicPlayMode, SeekBar _seekBarMusic, final TextView _textViewPlayTimeNow, TextView _textViewPlayTimeTotal) {
+        public void setView(final ImageView _imageViewPlayMusic, final ImageView _imageViewPreviousMusic, final ImageView _imageViewNextMusic, final ImageView _imageViewMusicPlayMode, final ImageView _imageViewMusicControlFavorite, final SeekBar _seekBarMusic, final TextView _textViewPlayTimeNow, final TextView _textViewPlayTimeTotal) {
             imageViewPlayMusic = _imageViewPlayMusic;
             imageViewPreviousMusic = _imageViewPreviousMusic;
             imageViewNextMusic = _imageViewNextMusic;
             imageViewMusicPlayMode = _imageViewMusicPlayMode;
+            imageViewMusicControlFavorite = _imageViewMusicControlFavorite;
             seekBarMusic = _seekBarMusic;
             textViewPlayTimeTotal = _textViewPlayTimeTotal;
             //设置监听器
@@ -331,6 +373,7 @@ public class MusicService extends Service {
             imageViewPreviousMusic.setOnClickListener(onClickEvent);
             imageViewNextMusic.setOnClickListener(onClickEvent);
             imageViewMusicPlayMode.setOnClickListener(onClickEvent);
+            imageViewMusicControlFavorite.setOnClickListener(onClickEvent);
             seekBarMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

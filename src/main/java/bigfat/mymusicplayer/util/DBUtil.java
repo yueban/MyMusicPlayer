@@ -58,7 +58,7 @@ public class DBUtil extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + T_MusicFile_Name + " (path nvarchar(200),title nvarchar(100),pinyin nvarchar(150),folder nvarchar(100),album nvarchar(30),artist nvarchar(30),primary key(path))");
+        db.execSQL("create table " + T_MusicFile_Name + " (path nvarchar(200),title nvarchar(100),pinyin nvarchar(150),folder nvarchar(100),album nvarchar(30),artist nvarchar(30),favorite boolean,primary key(path))");
         db.execSQL("create table " + T_PlayListFile_Name + " (path nvarchar(200),title nvarchar(100),pinyin nvarchar(150),album nvarchar(30),artist nvarchar(30),playlist int,primary key(path,playlist))");
         db.execSQL("create table " + T_PlayList_Name + " (id integer primary key autoincrement,playlist nvarchar(30))");
     }

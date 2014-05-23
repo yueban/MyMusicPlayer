@@ -46,7 +46,14 @@ public class ThreadUtil {
             //读取musicFileList中的信息，拼接sql语句
             for (int i = 0; i < musicFileList.size(); i++) {
                 HashMap<String, String> map = musicFileList.get(i);
-                sql[i] = "insert or ignore into " + DBUtil.T_MusicFile_Name + " (path,title,pinyin,folder,album,artist)values('" + map.get("path").replace("'", "''") + "','" + map.get("title").replace("'", "''") + "','" + map.get("pinyin").replace("'", "''") + "','" + map.get("folder").replace("'", "''") + "','" + map.get("album").replace("'", "''") + "','" + map.get("artist").replace("'", "''") + "')";
+                sql[i] = "insert or ignore into " + DBUtil.T_MusicFile_Name +
+                        " (path,title,pinyin,folder,album,artist,favorite)values('" +
+                        map.get("path").replace("'", "''") + "','" +
+                        map.get("title").replace("'", "''") + "','" +
+                        map.get("pinyin").replace("'", "''") + "','" +
+                        map.get("folder").replace("'", "''") + "','" +
+                        map.get("album").replace("'", "''") + "','" +
+                        map.get("artist").replace("'", "''") + "',0)";
             }
             try {
                 DBUtil.execSqlDatabase(context, DBUtil.databaseName, sql);

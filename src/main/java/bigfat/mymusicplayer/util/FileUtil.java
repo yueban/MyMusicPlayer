@@ -42,6 +42,6 @@ public class FileUtil {
     }
 
     public static enum SortKey {
-        All, Folder, Album, Artist, PlayList
+        All, Folder, Album, Artist, PlayList, FavoriteList
     }
 }

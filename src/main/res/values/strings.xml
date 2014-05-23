@@ -4,14 +4,14 @@
     <string name="app_name">224MP</string>
     <string name="search_title">search_title</string>
     <string name="action_settings">Settings</string>
-    <string name="musiclist">音乐</string>
+    <string name="music_file">曲库</string>
     <string name="playlist">歌单</string>
-    <string name="allmusic">所有</string>
+    <string name="music_all">所有</string>
     <string name="folder">文件夹</string>
     <string name="album">专辑</string>
     <string name="artist">歌手</string>
-    <string name="musictimedefault">00:00</string>
-    <string name="addto">添加到</string>
+    <string name="music_time_default">00:00</string>
+    <string name="add_to">添加到</string>
 
     <color name="white">#FFFFFF</color>
     <!--白色 -->

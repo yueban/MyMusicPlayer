@@ -53,6 +53,7 @@ public class MainActivity extends FragmentActivity {
     private ImageView imageViewPreviousMusic;
     private ImageView imageViewNextMusic;
     private ImageView imageViewMusicPlayMode;
+    private ImageView imageViewMusicControlFavorite;
     private SeekBar seekBarMusic;
     private TextView textViewPlayTimeNow;
     private TextView textViewPlayTimeTotal;
@@ -83,6 +84,7 @@ public class MainActivity extends FragmentActivity {
         imageViewPreviousMusic = (ImageView) findViewById(R.id.imageViewPreviousMusic);
         imageViewNextMusic = (ImageView) findViewById(R.id.imageViewNextMusic);
         imageViewMusicPlayMode = (ImageView) findViewById(R.id.imageViewMusicPlayMode);
+        imageViewMusicControlFavorite = (ImageView)findViewById(R.id.imageViewMusicControlFavorite);
         seekBarMusic = (SeekBar) findViewById(R.id.seekBarMusic);
         textViewPlayTimeNow = (TextView) findViewById(R.id.textViewPlayTimeNow);
         textViewPlayTimeTotal = (TextView) findViewById(R.id.textViewPlayTimeTotal);
@@ -103,7 +105,7 @@ public class MainActivity extends FragmentActivity {
                 musicBinder = (MusicService.MusicBinder) service;
                 isBind = true;
                 //将控件传递给MusicBinder
-                musicBinder.setView(imageViewPlayMusic, imageViewPreviousMusic, imageViewNextMusic, imageViewMusicPlayMode, seekBarMusic, textViewPlayTimeNow, textViewPlayTimeTotal);
+                musicBinder.setView(imageViewPlayMusic, imageViewPreviousMusic, imageViewNextMusic, imageViewMusicPlayMode,imageViewMusicControlFavorite, seekBarMusic, textViewPlayTimeNow, textViewPlayTimeTotal);
                 //刷新控件状态/显示
                 musicBinder.refreshView();
                 //初始化计时器

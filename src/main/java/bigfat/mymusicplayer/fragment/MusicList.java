@@ -159,6 +159,9 @@ public class MusicList extends Fragment {
                 case PlayList:
                     cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist,playlist from " + DBUtil.T_PlayListFile_Name + " where playlist=" + keyStr.replace("'", "''") + " order by pinyin", null);
                     break;
+                case FavoriteList:
+                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where favorite=1 order by pinyin", null);
+                    break;
             }
             final Cursor cursorFinal = cursor;
             if (cursorFinal != null) {

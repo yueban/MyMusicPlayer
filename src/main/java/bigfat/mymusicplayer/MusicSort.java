@@ -35,7 +35,7 @@ public class MusicSort extends ActionBarActivity {
         setContentView(R.layout.activity_musicsort);
         //配置ActionBar
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(R.string.musiclist);
+        actionBar.setTitle(R.string.music_file);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         //绑定控件

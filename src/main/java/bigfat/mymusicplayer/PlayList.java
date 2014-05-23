@@ -56,8 +56,14 @@ public class PlayList extends ActionBarActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent();
-                        intent.putExtra("sortKey", FileUtil.SortKey.PlayList.name());
-                        intent.putExtra("keyStr", playList.get(position).get("id"));
+                        //第一个列表是我的喜爱列表，传参作特殊处理
+                        if (position == 0) {
+                            intent.putExtra("sortKey", FileUtil.SortKey.FavoriteList.name());
+                            intent.putExtra("keyStr", "");
+                        } else {
+                            intent.putExtra("sortKey", FileUtil.SortKey.PlayList.name());
+                            intent.putExtra("keyStr", playList.get(position).get("id"));
+                        }
                         intent.putExtra("playlist", playList.get(position).get("playlist"));
                         intent.setClass(PlayList.this, MusicListActivity.class);
                         startActivity(intent);
@@ -66,31 +72,34 @@ public class PlayList extends ActionBarActivity {
                 listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(PlayList.this);
-                        builder.setMessage("确认删除吗");
-                        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        String[] sql = new String[2];
-                                        sql[0] = "delete from " + DBUtil.T_PlayList_Name + " where id=" + playList.get(position).get("id");
-                                        sql[1] = "delete from " + DBUtil.T_PlayList_Name + " where playlist=" + playList.get(position).get("id");
-                                        DBUtil.execSqlDatabase(PlayList.this, DBUtil.databaseName, sql);
-                                        Toast.makeText(PlayList.this, "删除成功", Toast.LENGTH_SHORT).show();
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }.run();
-                            }
-                        });
-                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.create().show();
+                        //第一个列表是我的喜爱列表，补课删除，不响应长按事件
+                        if (position != 0) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(PlayList.this);
+                            builder.setMessage("确认删除吗");
+                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String[] sql = new String[2];
+                                            sql[0] = "delete from " + DBUtil.T_PlayList_Name + " where id=" + playList.get(position).get("id");
+                                            sql[1] = "delete from " + DBUtil.T_PlayList_Name + " where playlist=" + playList.get(position).get("id");
+                                            DBUtil.execSqlDatabase(PlayList.this, DBUtil.databaseName, sql);
+                                            Toast.makeText(PlayList.this, "删除成功", Toast.LENGTH_SHORT).show();
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    }.run();
+                                }
+                            });
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.create().show();
+                        }
                         return false;
                     }
                 });
@@ -111,6 +120,16 @@ public class PlayList extends ActionBarActivity {
         Cursor cursor = null;
         try {
             db = DBUtil.getReadableDB(PlayList.this, DBUtil.databaseName);
+            //添加我的喜爱列表
+            cursor = DBUtil.rawQueryCursor(db, "select count(*) as count from " + DBUtil.T_MusicFile_Name + " where favorite=1", null);
+            if (cursor.moveToNext()) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("playlist", "我的喜爱");
+                map.put("count", cursor.getString(cursor.getColumnIndex("count")));
+                playList.add(map);
+            }
+            cursor.close();
+            //添加用户自定义播放列表
             cursor = db.rawQuery("select a.id,a.playlist,ifnull(b.count,0) as count from " + DBUtil.T_PlayList_Name + " as a left join (select playlist,count(*) as count from " + DBUtil.T_PlayListFile_Name + " group by playlist) as b on a.id=b.playlist", null);
             while (cursor.moveToNext()) {
                 HashMap<String, String> map = new HashMap<String, String>();

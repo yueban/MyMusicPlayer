@@ -1,3 +1,8 @@
+### 2014.05.27(version:0.7.2.0)
+* 代码结构优化，获取歌曲列表写成一个方法
+* 添加功能：记忆退出时播放的歌曲
+* 添加设置选项，是否记忆退出时播放的歌曲（因为Switch不支持Android4.0以下版本，故采用开源项目：[SwitchCompatLibrary](https://github.com/ankri/SwitchCompatLibrary) 以向下支持到Android2.2）
+
 ### 2014.05.23(version:0.6)
 * 实现播放界面的“喜爱”按钮功能
 * 在播放列表中显示“我的喜爱”列表

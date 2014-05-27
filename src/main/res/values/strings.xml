@@ -12,6 +12,7 @@
     <string name="artist">歌手</string>
     <string name="music_time_default">00:00</string>
     <string name="add_to">添加到</string>
+    <string name="save_music_status">记忆退出时播放的歌曲</string>
 
     <color name="white">#FFFFFF</color>
     <!--白色 -->

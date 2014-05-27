@@ -84,7 +84,7 @@ public class MainActivity extends FragmentActivity {
         imageViewPreviousMusic = (ImageView) findViewById(R.id.imageViewPreviousMusic);
         imageViewNextMusic = (ImageView) findViewById(R.id.imageViewNextMusic);
         imageViewMusicPlayMode = (ImageView) findViewById(R.id.imageViewMusicPlayMode);
-        imageViewMusicControlFavorite = (ImageView)findViewById(R.id.imageViewMusicControlFavorite);
+        imageViewMusicControlFavorite = (ImageView) findViewById(R.id.imageViewMusicControlFavorite);
         seekBarMusic = (SeekBar) findViewById(R.id.seekBarMusic);
         textViewPlayTimeNow = (TextView) findViewById(R.id.textViewPlayTimeNow);
         textViewPlayTimeTotal = (TextView) findViewById(R.id.textViewPlayTimeTotal);
@@ -98,6 +98,7 @@ public class MainActivity extends FragmentActivity {
         //配置ViewPager
         initFragmentList();
         viewPagerMusicInfo.setAdapter(new MusicInfoViewPagerAdapter(getSupportFragmentManager()));
+
         //绑定音乐播放服务
         sc = new ServiceConnection() {
             @Override
@@ -105,9 +106,15 @@ public class MainActivity extends FragmentActivity {
                 musicBinder = (MusicService.MusicBinder) service;
                 isBind = true;
                 //将控件传递给MusicBinder
-                musicBinder.setView(imageViewPlayMusic, imageViewPreviousMusic, imageViewNextMusic, imageViewMusicPlayMode,imageViewMusicControlFavorite, seekBarMusic, textViewPlayTimeNow, textViewPlayTimeTotal);
-                //刷新控件状态/显示
-                musicBinder.refreshView();
+                musicBinder.setView(imageViewPlayMusic, imageViewPreviousMusic, imageViewNextMusic, imageViewMusicPlayMode, imageViewMusicControlFavorite, seekBarMusic, textViewPlayTimeNow, textViewPlayTimeTotal);
+                //判断是否记住退出时播放的歌曲
+                if (getSharedPreferences("settings", 0).getBoolean(CodeUtil.EXIT_MUSIC_STATUS, false)) {
+                    //getExitMusicStatus()方法中包含refreshView()方法
+                    musicBinder.getExitMusicStatus();
+                } else {
+                    //刷新控件状态/显示
+                    musicBinder.refreshView();
+                }
                 //初始化计时器
                 Timer mTimer = new Timer();
                 TimerTask mTimerTask = new TimerTask() {
@@ -159,11 +166,11 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         //解绑BroadcastReceiver
         unregisterReceiver(musicChangeReceiver);
         //解绑音乐播放service
         unbindService(sc);
+        super.onDestroy();
     }
 
     private void initFragmentList() {

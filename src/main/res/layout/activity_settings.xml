@@ -5,4 +5,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.ankri.views.Switch
+            android:id="@+id/switchSaveMusicStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="12dp"
+            android:text="@string/save_music_status" />
+    </RelativeLayout>
 </LinearLayout>

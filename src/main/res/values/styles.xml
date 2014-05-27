@@ -12,6 +12,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowAnimationStyle">@style/AppAnimation</item>
+        <item name="switchStyle">@style/switch_dark</item>
+        <item name="textAppearance">@style/TextAppearance</item>
     </style>
 
     <style name="AppAnimation" parent="android:style/Animation.Activity">

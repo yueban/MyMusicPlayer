@@ -1,8 +1,6 @@
 package bigfat.mymusicplayer.fragment;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,6 +22,7 @@ import java.util.HashMap;
 import bigfat.mymusicplayer.MainActivity;
 import bigfat.mymusicplayer.R;
 import bigfat.mymusicplayer.dialog.PlayListDialog;
+import bigfat.mymusicplayer.util.CodeUtil;
 import bigfat.mymusicplayer.util.DBUtil;
 import bigfat.mymusicplayer.util.FileUtil;
 import bigfat.mymusicplayer.widget.IndexBar;
@@ -50,6 +49,7 @@ public class MusicList extends Fragment {
     private String keyStr;
     //列表数据
     private ArrayList<HashMap<String, String>> musicList;
+    private String sql = "";
     //是否是选择模式
     private boolean isSelectedMode = false;
     //CheckBox选择情况
@@ -103,7 +103,7 @@ public class MusicList extends Fragment {
                                 @Override
                                 public void run() {
                                     //播放该列表中position位置的歌曲
-                                    MainActivity.getMusicBinder().playMusicList(musicList, position);
+                                    MainActivity.getMusicBinder().playMusicList(musicList, position, sql);
                                     //返回播放界面
                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -138,56 +138,27 @@ public class MusicList extends Fragment {
 
     //获取列表数据
     private void initMusicList() {
-        musicList = new ArrayList<HashMap<String, String>>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        try {
-            db = DBUtil.getReadableDB(getActivity(), DBUtil.databaseName);
-            switch (sortKey) {
-                case All:
-                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " order by pinyin", null);
-                    break;
-                case Folder:
-                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where folder='" + keyStr.replace("'", "''") + "' order by pinyin", null);
-                    break;
-                case Album:
-                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where album='" + keyStr.replace("'", "''") + "' order by pinyin", null);
-                    break;
-                case Artist:
-                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where artist='" + keyStr.replace("'", "''") + "' order by pinyin", null);
-                    break;
-                case PlayList:
-                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist,playlist from " + DBUtil.T_PlayListFile_Name + " where playlist=" + keyStr.replace("'", "''") + " order by pinyin", null);
-                    break;
-                case FavoriteList:
-                    cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where favorite=1 order by pinyin", null);
-                    break;
-            }
-            final Cursor cursorFinal = cursor;
-            if (cursorFinal != null) {
-                while (cursorFinal.moveToNext()) {
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("path", cursorFinal.getString(cursorFinal.getColumnIndex("path")));
-                    map.put("title", cursorFinal.getString(cursorFinal.getColumnIndex("title")));
-                    map.put("pinyin", cursorFinal.getString(cursorFinal.getColumnIndex("pinyin")));
-                    map.put("album", cursorFinal.getString(cursorFinal.getColumnIndex("album")));
-                    map.put("artist", cursorFinal.getString(cursorFinal.getColumnIndex("artist")));
-                    if (sortKey == FileUtil.SortKey.PlayList) {
-                        map.put("playlist", cursorFinal.getString(cursorFinal.getColumnIndex("playlist")));
-                    }
-                    musicList.add(map);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null) {
-                db.close();
-            }
+        switch (sortKey) {
+            case All:
+                sql = "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " order by pinyin";
+                break;
+            case Folder:
+                sql = "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where folder='" + keyStr.replace("'", "''") + "' order by pinyin";
+                break;
+            case Album:
+                sql = "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where album='" + keyStr.replace("'", "''") + "' order by pinyin";
+                break;
+            case Artist:
+                sql = "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where artist='" + keyStr.replace("'", "''") + "' order by pinyin";
+                break;
+            case PlayList:
+                sql = "select path,title,pinyin,album,artist,playlist from " + DBUtil.T_PlayListFile_Name + " where playlist=" + keyStr.replace("'", "''") + " order by pinyin";
+                break;
+            case FavoriteList:
+                sql = "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name + " where favorite=1 order by pinyin";
+                break;
         }
+        musicList = CodeUtil.getMusicList(getActivity(), sql, sortKey);
         checkArray = new boolean[musicList.size()];
         for (int i = 0; i < checkArray.length; i++) {
             checkArray[i] = false;

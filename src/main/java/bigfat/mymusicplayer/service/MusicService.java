@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
@@ -66,6 +67,8 @@ public class MusicService extends Service {
         }
     };
     public static boolean isSeekBarChanging = false;
+    public static int position;
+    public static String sql = "";
     private boolean isFavorite;
     //MusicPlayer模块上的控件
     private ImageView imageViewPlayMusic;
@@ -81,7 +84,6 @@ public class MusicService extends Service {
     private int playmodeCurrent = 0;
     //正在播放的歌曲列表
     private ArrayList<HashMap<String, String>> musicList = null;
-    private int position;
     //播放顺序图片
     private int[] playmodeImgRes = {R.drawable.playmode_default,
             R.drawable.playmode_list_repeat,
@@ -129,6 +131,13 @@ public class MusicService extends Service {
         new Runnable() {
             @Override
             public void run() {
+                //判断是否记录播放信息
+                if (getSharedPreferences("settings", 0).getBoolean(CodeUtil.EXIT_MUSIC_STATUS, false)) {
+                    SharedPreferences.Editor editor = getSharedPreferences("data", 0).edit();
+                    editor.putString("sql", sql);
+                    editor.putInt("position", position);
+                    editor.commit();
+                }
                 mp.reset();
                 mp = MediaPlayer.create(MusicService.this, Uri.parse(fileAbsolutePath));
                 isFileLoaded = true;
@@ -176,14 +185,10 @@ public class MusicService extends Service {
         }.run();
     }
 
-    private void playMusicList(ArrayList<HashMap<String, String>> musicList, int position) {
+    private void playMusicList(ArrayList<HashMap<String, String>> musicList, int position, String sql) {
         this.musicList = musicList;
-        this.position = position;
-        playMusic(musicList.get(position).get("path"));
-    }
-
-    private void playDefaultMusicList(int position) {
-        this.position = position;
+        MusicService.position = position;
+        MusicService.sql = sql;
         playMusic(musicList.get(position).get("path"));
     }
 
@@ -202,33 +207,10 @@ public class MusicService extends Service {
                     new Runnable() {
                         @Override
                         public void run() {
-                            SQLiteDatabase db = null;
-                            Cursor cursor = null;
-                            try {
-                                db = DBUtil.getReadableDB(MusicService.this, DBUtil.databaseName);
-                                cursor = DBUtil.rawQueryCursor(db, "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name, null);
-                                musicList = new ArrayList<HashMap<String, String>>();
-                                while (cursor.moveToNext()) {
-                                    HashMap<String, String> map = new HashMap<String, String>();
-                                    map.put("path", cursor.getString(cursor.getColumnIndex("path")));
-                                    map.put("title", cursor.getString(cursor.getColumnIndex("title")));
-                                    map.put("pinyin", cursor.getString(cursor.getColumnIndex("pinyin")));
-                                    map.put("album", cursor.getString(cursor.getColumnIndex("album")));
-                                    map.put("artist", cursor.getString(cursor.getColumnIndex("artist")));
-                                    musicList.add(map);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            } finally {
-                                if (cursor != null) {
-                                    cursor.close();
-                                }
-                                if (db != null) {
-                                    db.close();
-                                }
-                            }
+                            String sql = "select path,title,pinyin,album,artist from " + DBUtil.T_MusicFile_Name;
+                            musicList = CodeUtil.getMusicList(MusicService.this, sql, null);
                             if (musicList.size() > 0) {
-                                playDefaultMusicList((int) (Math.random() * musicList.size()));
+                                playMusicList(musicList, (int) (Math.random() * musicList.size()), sql);
                             } else {
                                 Toast.makeText(MusicService.this, "未检索到任何歌曲", Toast.LENGTH_SHORT).show();
                             }
@@ -311,10 +293,65 @@ public class MusicService extends Service {
     }
 
     public class MusicBinder extends Binder {
-        public void playMusicList(ArrayList<HashMap<String, String>> musicList, int position) {
-            MusicService.this.playMusicList(musicList, position);
+        public void playMusicList(ArrayList<HashMap<String, String>> musicList, int position, String sql) {
+            MusicService.this.playMusicList(musicList, position, sql);
         }
 
+        //获取退出时的播放信息
+        public void getExitMusicStatus() {
+            SharedPreferences sp = getSharedPreferences("data", 0);
+            MusicService.sql = sp.getString("sql", "");
+            MusicService.position = sp.getInt("position", 0);
+            musicList = CodeUtil.getMusicList(MusicService.this, sql, null);
+            new Runnable() {
+                @Override
+                public void run() {
+                    mp.reset();
+                    mp = MediaPlayer.create(MusicService.this, Uri.parse(musicList.get(position).get("path")));
+                    isFileLoaded = true;
+                    title = musicList.get(position).get("title");
+                    album = musicList.get(position).get("album");
+                    artist = musicList.get(position).get("artist");
+                    refreshView();
+                    sendBroadcast(new Intent(CodeUtil.MUSIC_CHANGE_ACTION));
+                    //播放完成后的动作
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            isFileLoaded = false;
+                            isPlaying = false;
+                            switch (playmodeCurrent) {
+                                case 0://顺序播放
+                                    if (position == musicList.size() - 1) {
+                                        mp.release();
+                                        Toast.makeText(MusicService.this, "当前列表已播放完毕", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        playMusic(musicList.get(++position).get("path"));
+                                    }
+                                    break;
+                                case 1://列表循环
+                                    if (position == musicList.size() - 1) {
+                                        position = 0;
+                                        playMusic(musicList.get(position).get("path"));
+                                    } else {
+                                        playMusic(musicList.get(++position).get("path"));
+                                    }
+                                    break;
+                                case 2://单曲循环
+                                    playMusic(musicList.get(position).get("path"));
+                                    break;
+                                case 3://随机播放
+                                    position = (int) (Math.random() * musicList.size());
+                                    playMusic(musicList.get(position).get("path"));
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }.run();
+        }
+
+        //刷新播放界面控件
         public void refreshView() {
             imageViewMusicPlayMode.setImageResource(playmodeImgRes[playmodeCurrent]);
             if (isFileLoaded) {

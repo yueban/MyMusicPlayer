@@ -12,7 +12,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowAnimationStyle">@style/AppAnimation</item>
-        <item name="switchStyle">@style/switch_dark</item>
+        <item name="switchStyle">@style/switch_light</item>
         <item name="textAppearance">@style/TextAppearance</item>
     </style>
 
@@ -33,7 +33,7 @@
     <style name="viewMusicListBannerLine">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">3dp</item>
-        <item name="android:background">@color/red</item>
+        <item name="android:background">#699dce</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:visibility">invisible</item>
     </style>
@@ -41,6 +41,7 @@
     <style name="textViewMusicListBanner">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#f8f8f8</item>
         <item name="android:textSize">18sp</item>
         <item name="android:layout_centerInParent">true</item>
     </style>

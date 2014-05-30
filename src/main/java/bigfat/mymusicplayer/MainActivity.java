@@ -18,12 +18,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import bigfat.mymusicplayer.fragment.CurrentMusicList;
 import bigfat.mymusicplayer.fragment.MusicInfo;
 import bigfat.mymusicplayer.service.MusicService;
 import bigfat.mymusicplayer.util.CodeUtil;
@@ -39,6 +39,7 @@ public class MainActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(CodeUtil.MUSIC_CHANGE_ACTION)) {
                 musicInfo.showMusicInfo();
+                currentMusicList.showCurrentMusicList();
             }
         }
     };
@@ -60,6 +61,7 @@ public class MainActivity extends FragmentActivity {
     //Fragment模块
     private ArrayList<Fragment> fragmentList;
     private MusicInfo musicInfo;
+    private CurrentMusicList currentMusicList;
     private ServiceConnection sc;
     private boolean isBind = false;
 
@@ -107,13 +109,20 @@ public class MainActivity extends FragmentActivity {
                 isBind = true;
                 //将控件传递给MusicBinder
                 musicBinder.setView(imageViewPlayMusic, imageViewPreviousMusic, imageViewNextMusic, imageViewMusicPlayMode, imageViewMusicControlFavorite, seekBarMusic, textViewPlayTimeNow, textViewPlayTimeTotal);
-                //判断是否记住退出时播放的歌曲
-                if (getSharedPreferences("settings", 0).getBoolean(CodeUtil.EXIT_MUSIC_STATUS, false)) {
-                    //getExitMusicStatus()方法中包含refreshView()方法
-                    musicBinder.getExitMusicStatus();
-                } else {
+                //判断MusicService是否在运行
+                if (MusicService.isRunning) {
                     //刷新控件状态/显示
                     musicBinder.refreshView();
+                } else {
+                    MusicService.isRunning = true;
+                    //判断是否记住退出时播放的歌曲
+                    if (getSharedPreferences("settings", 0).getBoolean(CodeUtil.EXIT_MUSIC_STATUS, false)) {
+                        //getExitMusicStatus()方法中包含refreshView()方法
+                        musicBinder.getExitMusicStatus();
+                    } else {
+                        //刷新控件状态/显示
+                        musicBinder.refreshView();
+                    }
                 }
                 //初始化计时器
                 Timer mTimer = new Timer();
@@ -158,10 +167,16 @@ public class MainActivity extends FragmentActivity {
                     editor.putInt("startCount", 1);
                     editor.commit();
                     //读取所有音乐文件信息并存入数据库
-                    new ThreadUtil.DatabaseAsyncTask(MainActivity.this).execute(FileUtil.getRootPath());
+                    new ThreadUtil.DatabaseAsyncTask(MainActivity.this, true).execute(FileUtil.getRootPath());
                 }
             }
         }.run();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewPagerMusicInfo.setCurrentItem(1);
     }
 
     @Override
@@ -175,7 +190,9 @@ public class MainActivity extends FragmentActivity {
 
     private void initFragmentList() {
         fragmentList = new ArrayList<Fragment>();
+        currentMusicList = new CurrentMusicList();
         musicInfo = new MusicInfo();
+        fragmentList.add(currentMusicList);
         fragmentList.add(musicInfo);
     }
 
@@ -184,7 +201,12 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onClick(View v) {
             if (v == imageViewSearch) {
-                Toast.makeText(MainActivity.this, "这个功能还没做", Toast.LENGTH_SHORT).show();
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(new Intent(MainActivity.this, Search.class));
+                    }
+                }.run();
             } else if (v == textViewMusicList) {
                 new Runnable() {
                     @Override

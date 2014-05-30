@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -22,10 +23,15 @@ import bigfat.mymusicplayer.util.FileUtil;
  */
 public class MusicSort extends ActionBarActivity {
     //控件
+    private ViewPager viewPager;
     private View viewLineAllMusic;
     private View viewLineFolder;
     private View viewLineAlbum;
     private View viewLineArtist;
+    private RelativeLayout relativeLayoutMusicSortBannerAll;
+    private RelativeLayout relativeLayoutMusicSortBannerFolder;
+    private RelativeLayout relativeLayoutMusicSortBannerAlbum;
+    private RelativeLayout relativeLayoutMusicSortBannerArtist;
     //ViewPager中的Fragment列表
     private ArrayList<Fragment> fragmentList;
 
@@ -39,11 +45,20 @@ public class MusicSort extends ActionBarActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         //绑定控件
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPagerMusicList);
+        viewPager = (ViewPager) findViewById(R.id.viewPagerMusicList);
         viewLineAllMusic = findViewById(R.id.viewLineAllMusic);
         viewLineFolder = findViewById(R.id.viewLineFolder);
         viewLineAlbum = findViewById(R.id.viewLineAlbum);
         viewLineArtist = findViewById(R.id.viewLineArtist);
+        relativeLayoutMusicSortBannerAll = (RelativeLayout) findViewById(R.id.relativeLayoutMusicSortBannerAll);
+        relativeLayoutMusicSortBannerFolder = (RelativeLayout) findViewById(R.id.relativeLayoutMusicSortBannerFolder);
+        relativeLayoutMusicSortBannerAlbum = (RelativeLayout) findViewById(R.id.relativeLayoutMusicSortBannerAlbum);
+        relativeLayoutMusicSortBannerArtist = (RelativeLayout) findViewById(R.id.relativeLayoutMusicSortBannerArtist);
+        OnClickEvent onClickEvent = new OnClickEvent();
+        relativeLayoutMusicSortBannerAll.setOnClickListener(onClickEvent);
+        relativeLayoutMusicSortBannerFolder.setOnClickListener(onClickEvent);
+        relativeLayoutMusicSortBannerAlbum.setOnClickListener(onClickEvent);
+        relativeLayoutMusicSortBannerArtist.setOnClickListener(onClickEvent);
         new Runnable() {
             @Override
             public void run() {
@@ -131,6 +146,21 @@ public class MusicSort extends ActionBarActivity {
                 finish();
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private class OnClickEvent implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            if (v == relativeLayoutMusicSortBannerAll) {
+                viewPager.setCurrentItem(0);
+            } else if (v == relativeLayoutMusicSortBannerFolder) {
+                viewPager.setCurrentItem(1);
+            } else if (v == relativeLayoutMusicSortBannerAlbum) {
+                viewPager.setCurrentItem(2);
+            } else if (v == relativeLayoutMusicSortBannerArtist) {
+                viewPager.setCurrentItem(3);
+            }
         }
     }
 

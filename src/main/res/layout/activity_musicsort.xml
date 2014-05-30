@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background">
 
     <LinearLayout
         android:id="@+id/linearLayoutMusicList"
@@ -10,6 +11,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerAll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -25,17 +27,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="2dp"
-            android:layout_height="match_parent">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_centerVertical="true"
-                android:background="@color/gray" />
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerFolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -50,17 +42,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="2dp"
-            android:layout_height="match_parent">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_centerVertical="true"
-                android:background="@color/gray" />
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerAlbum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -75,17 +57,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="2dp"
-            android:layout_height="match_parent">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_centerVertical="true"
-                android:background="@color/gray" />
-        </RelativeLayout>
-
-        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerArtist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">

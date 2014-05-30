@@ -36,6 +36,9 @@ public class MusicListActivity extends ActionBarActivity {
                     case PlayList:
                         actionBar.setTitle(intent.getStringExtra("playlist"));
                         break;
+                    case FavoriteList:
+                        actionBar.setTitle("我的喜爱");
+                        break;
                     default:
                         actionBar.setTitle(keyStr);
                         break;

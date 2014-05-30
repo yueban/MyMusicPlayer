@@ -20,11 +20,11 @@
 
             <ImageView
                 android:id="@+id/imageViewSearch"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentLeft="true"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
+                android:layout_centerVertical="true"
+                android:layout_margin="12dp"
                 android:src="@drawable/icon_search" />
 
             <RelativeLayout
@@ -61,12 +61,12 @@
 
             <ImageView
                 android:id="@+id/imageViewMenu"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
-                android:padding="6dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/abc_menu_dropdown_panel_holo_light" />
+                android:layout_centerVertical="true"
+                android:layout_margin="12dp"
+                android:src="@drawable/setting" />
         </RelativeLayout>
     </LinearLayout>
 

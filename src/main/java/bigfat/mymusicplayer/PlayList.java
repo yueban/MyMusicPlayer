@@ -152,7 +152,7 @@ public class PlayList extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(1, 1, 1, "添加");
+        getMenuInflater().inflate(R.menu.menu_playlist, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -162,7 +162,7 @@ public class PlayList extends ActionBarActivity {
             case android.R.id.home:
                 finish();
                 break;
-            case 1:
+            case R.id.menuAddPlayList:
                 new Runnable() {
                     @Override
                     public void run() {

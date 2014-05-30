@@ -15,29 +15,30 @@ import bigfat.mymusicplayer.service.MusicService;
  */
 public class MusicInfo extends Fragment {
     private TextView textViewMusicTitle;
-    private TextView textViewMusicAlbum;
+    //    private TextView textViewMusicAlbum;
     private TextView textViewMusicArtist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_musicinfo, null);
         textViewMusicTitle = (TextView) view.findViewById(R.id.textViewMusicTitle);
-        textViewMusicAlbum = (TextView) view.findViewById(R.id.textViewMusicAlbum);
+//        textViewMusicAlbum = (TextView) view.findViewById(R.id.textViewMusicAlbum);
         textViewMusicArtist = (TextView) view.findViewById(R.id.textViewMusicArtist);
+        showMusicInfo();
         return view;
     }
 
     public void showMusicInfo() {
         if (MusicService.isFileLoaded) {
             textViewMusicTitle.setVisibility(View.VISIBLE);
-            textViewMusicAlbum.setVisibility(View.VISIBLE);
+//            textViewMusicAlbum.setVisibility(View.VISIBLE);
             textViewMusicArtist.setVisibility(View.VISIBLE);
             textViewMusicTitle.setText(MusicService.title);
-            textViewMusicAlbum.setText(MusicService.album);
+//            textViewMusicAlbum.setText(MusicService.album);
             textViewMusicArtist.setText(MusicService.artist);
         } else {
             textViewMusicTitle.setVisibility(View.GONE);
-            textViewMusicAlbum.setVisibility(View.GONE);
+//            textViewMusicAlbum.setVisibility(View.GONE);
             textViewMusicArtist.setVisibility(View.GONE);
         }
     }

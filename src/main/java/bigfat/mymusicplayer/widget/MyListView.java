@@ -54,7 +54,9 @@ public class MyListView extends ListView {
         super.onLayout(changed, l, t, r, b);
         if (mTitle != null) {
             mTitle.layout(0, 0, width, height);
-            titleLayout(getFirstVisiblePosition());
+            if (getFirstVisiblePosition() != 0) {
+                titleLayout(getFirstVisiblePosition());
+            }
         }
     }
 

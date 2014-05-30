@@ -23,6 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/MainActivityTheme" />
+        <activity android:name=".Search" />
         <activity android:name=".MusicSort" />
         <activity android:name=".PlayList" />
         <activity android:name=".Settings" />

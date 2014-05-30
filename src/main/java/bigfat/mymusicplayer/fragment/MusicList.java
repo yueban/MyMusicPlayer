@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -32,7 +34,7 @@ import bigfat.mymusicplayer.widget.MyListView;
  * Created by bigfat on 2014/5/8.
  */
 public class MusicList extends Fragment {
-    MusicListAdapter musicListAdapter;
+    private MusicListAdapter adapter;
     //控件
     private MyListView myListViewMusicList;
     private RelativeLayout relativeLayoutMusicListAction;
@@ -86,10 +88,20 @@ public class MusicList extends Fragment {
             public void run() {
                 initMusicList();
                 //初始化ListView适配器
-                musicListAdapter = new MusicListAdapter();
+                adapter = new MusicListAdapter();
                 myListViewMusicList.setTitle(LayoutInflater.from(getActivity()).inflate(R.layout.list_item_tag, myListViewMusicList, false));
-                myListViewMusicList.setAdapter(musicListAdapter);
-                myListViewMusicList.setOnScrollListener(musicListAdapter);
+                //设置ListView动画
+//                AnimationSet set = new AnimationSet(true);
+//                Animation animation = AnimationUtils.loadAnimation(getActivity(),
+//                        R.anim.list_item_music_in_alpha);
+//                set.addAnimation(animation);
+//                LayoutAnimationController controller = new LayoutAnimationController(
+//                        set, 0.3f);
+//                myListViewMusicList.setLayoutAnimation(controller);
+
+
+                myListViewMusicList.setAdapter(adapter);
+                myListViewMusicList.setOnScrollListener(adapter);
                 //初始化IndexBar
                 indexBarMusicList.setListView(myListViewMusicList);
                 myListViewMusicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -97,7 +109,7 @@ public class MusicList extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                         if (isSelectedMode) {
                             checkArray[position] = !checkArray[position];
-                            musicListAdapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                         } else {
                             new Runnable() {
                                 @Override
@@ -120,7 +132,7 @@ public class MusicList extends Fragment {
                         if (!isSelectedMode) {
                             isSelectedMode = true;
                             checkArray[position] = true;
-                            musicListAdapter.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                         }
                         return true;
                     }
@@ -133,7 +145,7 @@ public class MusicList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        musicListAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     //获取列表数据
@@ -187,7 +199,7 @@ public class MusicList extends Fragment {
                         for (int i = 0; i < checkArray.length; i++) {
                             checkArray[i] = false;
                         }
-                        musicListAdapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
                 }.run();
             } else if (v == buttonMusicListChoseAll) {
@@ -204,7 +216,7 @@ public class MusicList extends Fragment {
                                 checkArray[i] = false;
                             }
                         }
-                        musicListAdapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
                 }.run();
             } else if (v == buttonMusicListAdd) {
@@ -239,7 +251,7 @@ public class MusicList extends Fragment {
                         DBUtil.execSqlDatabase(getActivity(), DBUtil.databaseName, sql);
                         Toast.makeText(getActivity(), "删除了" + list.size() + "首歌曲", Toast.LENGTH_SHORT).show();
                         initMusicList();
-                        musicListAdapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
                     }
                 }.run();
             }
@@ -276,7 +288,7 @@ public class MusicList extends Fragment {
         public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 holder = new ViewHolder();
-                convertView = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_music, null);
+                convertView = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_music, parent, false);
                 holder.textViewListItemTag = (TextView) convertView.findViewById(R.id.textViewListItemTag);
                 holder.textViewMusicItem = (TextView) convertView.findViewById(R.id.textViewMusicItem);
                 holder.checkBoxMusicItem = (CheckBox) convertView.findViewById(R.id.checkBoxMusicItem);
@@ -307,12 +319,15 @@ public class MusicList extends Fragment {
             } else {
                 holder.checkBoxMusicItem.setVisibility(View.GONE);
             }
+            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.list_item_music_in_alpha);
+
+            convertView.startAnimation(animation);
             return convertView;
         }
 
         @Override
         public long getItemId(int position) {
-            return position;
+            return musicList.get(position).hashCode();
         }
 
         @Override
@@ -406,7 +421,7 @@ public class MusicList extends Fragment {
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (view instanceof MyListView) {
+            if (firstVisibleItem != 0 && view instanceof MyListView) {
                 ((MyListView) view).titleLayout(firstVisibleItem);
             }
         }

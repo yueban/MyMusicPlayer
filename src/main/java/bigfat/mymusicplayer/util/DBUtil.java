@@ -65,6 +65,9 @@ public class DBUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("delete from " + T_MusicFile_Name);
+        db.execSQL("delete from " + T_PlayListFile_Name);
+        db.execSQL("delete from " + T_PlayList_Name);
         onCreate(db);
     }
 }

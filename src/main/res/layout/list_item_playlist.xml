@@ -10,7 +10,7 @@
         android:id="@+id/textViewPlayListName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <TextView
@@ -18,6 +18,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
-        android:textColor="@color/gray"
+        android:textColor="@color/whitesmoke"
         android:textSize="12sp" />
 </LinearLayout>

@@ -262,8 +262,11 @@ public class MusicList extends Fragment {
         private char[] indexChar = {'#', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
         private ArrayList<Character> indexCharList;
         private ArrayList<Integer> indexIntList;
-
         private ViewHolder holder;
+        //记录当前显示的Item的最大position，以优化Animation的显示效果
+        //private int lastShownPosition = -1;
+        //ListView中Item的动画
+        //private Animation itemAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.list_item_music_in_alpha);
 
         public MusicListAdapter() {
             initIndexChar();
@@ -319,9 +322,10 @@ public class MusicList extends Fragment {
             } else {
                 holder.checkBoxMusicItem.setVisibility(View.GONE);
             }
-            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.list_item_music_in_alpha);
-
-            convertView.startAnimation(animation);
+//            if(position > lastShownPosition){
+//                lastShownPosition = position;
+//                convertView.startAnimation(itemAnimation);
+//            }
             return convertView;
         }
 

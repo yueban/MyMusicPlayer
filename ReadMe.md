@@ -1,15 +1,21 @@
 #### 功能介绍
-* 主界面（播放界面）
-![](http://img3.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_10_59_24.png)
-* 曲库
-![](http://img3.picbed.org/uploads/2014/06/Screenshot_2014_06_06_10_59_47.png)
-* 歌手
-![](http://img4.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_10_59_55.png* 歌单
-![](http://img4.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_10_59_58.png)
-* 搜索
-![](http://img5.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_11_00_36.png)
-* 更新本地歌曲
-![](http://img4.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_11_00_10.png)
+* 主界面（播放界面）  
+<a href="http://img3.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_10_59_24.png" title=$quot;点击显示原始图片$quot;><img src="http://img3.tuchuang.org/thumbs/2014/06/Screenshot_2014_06_06_10_59_24.png"></a>
+
+* 曲库  
+<a href="http://img3.picbed.org/uploads/2014/06/Screenshot_2014_06_06_10_59_47.png" title=$quot;点击显示原始图片$quot;><img src="http://img3.picbed.org/thumbs/2014/06/Screenshot_2014_06_06_10_59_47.png"></a>
+
+* 歌手  
+<a href="http://img4.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_10_59_55.png" title=$quot;点击显示原始图片$quot;><img src="http://img4.tuchuang.org/thumbs/2014/06/Screenshot_2014_06_06_10_59_55.png"></a>
+
+* 歌单  
+<a href="http://img4.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_10_59_58.png" title=$quot;点击显示原始图片$quot;><img src="http://img4.tuchuang.org/thumbs/2014/06/Screenshot_2014_06_06_10_59_58.png"></a>
+
+* 搜索  
+<a href="http://img5.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_11_00_36.png" title=$quot;点击显示原始图片$quot;><img src="http://img5.tuchuang.org/thumbs/2014/06/Screenshot_2014_06_06_11_00_36.png"></a>
+
+* 更新本地歌曲  
+<a href="http://img4.tuchuang.org/uploads/2014/06/Screenshot_2014_06_06_11_00_10.png" title=$quot;点击显示原始图片$quot;><img src="http://img4.tuchuang.org/thumbs/2014/06/Screenshot_2014_06_06_11_00_10.png"></a>
 
 #### 更新日志
 ##### 2014.05.30(version:0.9.1.0)

@@ -2,13 +2,12 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 18
-    buildToolsVersion '19.0.3'
-
+    buildToolsVersion '19.1.0'
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 19
         versionCode 25
-        versionName "0.9.1.0"
+        versionName '0.9.1.0'
     }
     buildTypes {
         release {
@@ -16,12 +15,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/jaudiotagger-2.0.2.jar')
     compile files('libs/pinyin4j-2.5.0.jar')
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:19.1.0'
     compile project(':SwitchCompatLibrary')
 }

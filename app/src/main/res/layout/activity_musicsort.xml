@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/main_background">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutMusicList"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/textViewMusicListBanner"
+                android:text="@string/music_all" />
+
+            <View
+                android:id="@+id/viewLineAllMusic"
+                style="@style/viewMusicListBannerLine"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerFolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/textViewMusicListBanner"
+                android:text="@string/folder" />
+
+            <View
+                android:id="@+id/viewLineFolder"
+                style="@style/viewMusicListBannerLine" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerAlbum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/textViewMusicListBanner"
+                android:text="@string/album" />
+
+            <View
+                android:id="@+id/viewLineAlbum"
+                style="@style/viewMusicListBannerLine" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutMusicSortBannerArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/textViewMusicListBanner"
+                android:text="@string/artist" />
+
+            <View
+                android:id="@+id/viewLineArtist"
+                style="@style/viewMusicListBannerLine" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPagerMusicList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/linearLayoutMusicList" />
+</RelativeLayout>

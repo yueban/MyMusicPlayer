@@ -18,13 +18,18 @@ import java.util.HashMap;
  * Created by bigfat on 2014/5/7.
  */
 public class ThreadUtil {
-    public static class DatabaseAsyncTask extends AsyncTask<String, Integer, String> {
+    public interface OnGetPathUpgrade {
+        void onUpgrade(String path);
+    }
+
+    public static class DatabaseAsyncTask extends AsyncTask<String, String, String> {
         private Context context;
         private ProgressDialog progressDialog;
-        private ArrayList<HashMap<String, String>> musicFileList = new ArrayList<HashMap<String, String>>();
-        private ArrayList<String> pathList = new ArrayList<String>();
-        private ArrayList<String> fileNameList = new ArrayList<String>();
+        private ArrayList<HashMap<String, String>> musicFileList = new ArrayList<>();
+        private ArrayList<String> pathList = new ArrayList<>();
+        private ArrayList<String> fileNameList = new ArrayList<>();
         private boolean isFirstTime;
+        private OnGetPathUpgrade onGetPathUpgrade;
 
         public DatabaseAsyncTask(Context context, boolean isFirstTime) {
             this.context = context;
@@ -36,9 +41,8 @@ public class ThreadUtil {
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(context);
-            progressDialog.setTitle("正在搜索歌曲");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setMax(1);
+            progressDialog.setTitle("正在搜索歌曲文件");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setCancelable(false);
             progressDialog.show();
         }
@@ -52,12 +56,24 @@ public class ThreadUtil {
                         "drop table " + DBUtil.T_PlayListFile_Name,
                         "drop table " + DBUtil.T_PlayList_Name});
             }
+
             //读取歌曲文件路径
-            getAllMusicFilePath(params[0]);
+            if (onGetPathUpgrade == null) {
+                onGetPathUpgrade = new OnGetPathUpgrade() {
+                    @Override
+                    public void onUpgrade(String absolutePath) {
+                        publishProgress(absolutePath);
+                    }
+                };
+            }
+            getAllMusicFilePath(params[0], onGetPathUpgrade);
+            publishProgress("正在解析歌曲文件");
+
             //读取歌曲文件信息，存入musicList列表
             for (int i = 0; i < pathList.size(); i++) {
                 String path = pathList.get(i);
                 String fileName = fileNameList.get(i);
+                publishProgress(fileName, String.valueOf(i + 1));
                 String db_title = fileName.substring(0, fileName.lastIndexOf("."));
                 String db_album = "(unknown)";
                 String db_artist = "(unknown)";
@@ -65,6 +81,7 @@ public class ThreadUtil {
                     final AudioFile audioFile = AudioFileIO.read(new File(path + fileName));
                     final Tag tag = audioFile.getTag();
                     if (tag != null) {
+                        tag.setEncoding("UTF-8");
                         final String titleTemp = tag.getFirst(FieldKey.TITLE);
                         final String albumTemp = tag.getFirst(FieldKey.ALBUM);
                         final String artistTemp = tag.getFirst(FieldKey.ARTIST);
@@ -91,7 +108,7 @@ public class ThreadUtil {
                     db_pinyin = "#" + db_pinyin;
                 }
                 //将要存入数据库中的信息加入musicFileList
-                HashMap<String, String> map = new HashMap<String, String>();
+                HashMap<String, String> map = new HashMap<>();
                 map.put("path", db_path);
                 map.put("title", db_title);
                 map.put("pinyin", db_pinyin);
@@ -99,7 +116,6 @@ public class ThreadUtil {
                 map.put("album", db_album);
                 map.put("artist", db_artist);
                 musicFileList.add(map);
-                publishProgress(i);
             }
             //读取musicFileList中的信息，拼接sql语句
             String[] sql = new String[musicFileList.size()];
@@ -124,13 +140,20 @@ public class ThreadUtil {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            if (values[0] == 0) {
-                progressDialog.setMax(pathList.size());
-            } else if (values[0] == pathList.size()) {
-                progressDialog.setTitle("存储歌曲信息");
-            } else {
-                progressDialog.setProgress(values[0]);
+        protected void onProgressUpdate(String... values) {
+            if (values[0].equals("正在解析歌曲文件")) {
+                progressDialog.dismiss();
+
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setTitle("正在解析歌曲文件");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setMax(fileNameList.size());
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+            progressDialog.setMessage(values[0]);
+            if (values.length > 1) {
+                progressDialog.setProgress(Integer.parseInt(values[1]));
             }
         }
 
@@ -140,14 +163,20 @@ public class ThreadUtil {
             Toast.makeText(context, "歌曲更新完毕", Toast.LENGTH_SHORT).show();
         }
 
+        long lastUpdateTime = 0;
+
         //获取所有歌曲文件路径
-        private void getAllMusicFilePath(String path) {
+        private void getAllMusicFilePath(String path, OnGetPathUpgrade onGetPathUpgrade) {
             try {
                 String[] fileList = new File(path).list();
                 for (String fileListItem : fileList) {
+                    if (System.currentTimeMillis() - lastUpdateTime > 500) {
+                        lastUpdateTime = System.currentTimeMillis();
+                        onGetPathUpgrade.onUpgrade(path + fileListItem);
+                    }
                     if (FileUtil.isDir(path + fileListItem)) {
                         if (FileUtil.isAccessDir(path + fileListItem)) {
-                            getAllMusicFilePath(path + fileListItem + File.separator);
+                            getAllMusicFilePath(path + fileListItem + File.separator, onGetPathUpgrade);
                         }
                     } else if (fileListItem.contains(".")) {
                         String fileType = fileListItem.substring(fileListItem.lastIndexOf(".") + 1, fileListItem.length());
